@@ -13,13 +13,9 @@ export function activate(context: vscode.ExtensionContext) {
             const [, handlerPath, handlerFunction] = match;
             const fileTypes = ['js', 'ts', 'py'].join(',');
 
-            let resultFile: vscode.Uri;
-            if (os.platform() === "win32") {
-              [resultFile] = await vscode.workspace.findFiles(`**\\${handlerPath}.{${fileTypes}}`,"**\\node_modules\\**", 1);
-            } else {
-              [resultFile] = await vscode.workspace.findFiles(`**/${handlerPath}.{${fileTypes}}`,"**/node_modules/**", 1);
-            }  
-            if(!resultFile || !fs.existsSync(resultFile.path)) {
+            const [resultFile] = await vscode.workspace.findFiles(`**/${handlerPath}.{${fileTypes}}`,"**/node_modules/**", 1);
+            
+            if(!resultFile || !fs.existsSync(resultFile.fsPath)) {
                 vscode.window.showErrorMessage(`File for handler ${handlerFunction} does not exist.`)
                 return []
             }
